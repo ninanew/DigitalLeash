@@ -9,10 +9,9 @@
 import UIKit
 
 
-class NextViewController: UIViewController {
+final class NextViewController: UIViewController {
 
     @IBAction func done(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
     }
-    
 }

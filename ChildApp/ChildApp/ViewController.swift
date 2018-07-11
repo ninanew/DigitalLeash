@@ -10,24 +10,18 @@ import UIKit
 import CoreLocation
 
 
-class ViewController: UIViewController, CLLocationManagerDelegate {
-    
+final class ViewController: UIViewController, CLLocationManagerDelegate {
     
     @IBOutlet weak var usernameField: UITextField!
-    
-    @IBOutlet weak var NoInternetConnection: UILabel!
-    
+    @IBOutlet weak var noInternetConnection: UILabel!
     
     let locationManager: CLLocationManager = CLLocationManager()
     var startLocation: CLLocation!
     var distanceFromLocation: CLLocationDistance?
     
     var url: URL?
-    
     private let baseUrl = "https://turntotech.firebaseio.com/digitalleash"
-    
     private let httpMethodString = "PATCH"
-    
     
     let config = URLSessionConfiguration.default
     let session = URLSession.shared
@@ -35,9 +29,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     lazy var request: URLRequest = {
         var request = URLRequest(url: self.url!)
         request.httpMethod = "PATCH"
-        return request }()
-
-    
+        return request
+    }()
 
     @IBAction func reportLocation(_ sender: Any) {
        postWith(username: usernameField.text!)
@@ -58,28 +51,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         
         NotificationCenter.default.addObserver(self, selector: #selector(statusManager), name: .flagsChanged, object: Network.reachability)
         updateUserInterface()
-
-        
     }
     
-    func locationManager(_ manager: CLLocationManager,
-                         didUpdateLocations locations: [CLLocation]) {
-        
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         startLocation = locations[locations.count - 1]
-        
     }
     
     
     func distance (from fromlocation : CLLocation, to tolocation : CLLocation) -> Double {
-        
-        
-        
         return fromlocation.distance(from:tolocation)
-
     }
-    
-    
-        
         
    func postWith(username: String) {
         
@@ -89,24 +70,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         var request = URLRequest(url: URL(string: requestUrlString)!)
         request.httpMethod = "PATCH"
         request.httpBody = jsonData
-        session.dataTask(with: request) { (data, response, error) in
-            
+        session.dataTask(with: request) { [weak self] (data, response, error) in
             // comes back to this block when post done
             DispatchQueue.main.async {
-                self.performSegue(withIdentifier: "segueshow", sender: nil)
+                self?.performSegue(withIdentifier: "segueshow", sender: nil)
             }
-           
-            
         }.resume()
-    
-    
     }
     
-    @IBAction func unwindToVC(segue:UIStoryboardSegue) {
-        
-    }
-
-  
     func updateUserInterface() {
         guard let status = Network.reachability?.status else { return }
         switch status {
@@ -127,8 +98,4 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     @objc func statusManager(_ notification: Notification) {
         updateUserInterface()
     }
-
-
 }
-
-
